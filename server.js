@@ -18,7 +18,7 @@ const startServer = async () => {
     await pool.connect();
     logger.info("database connected successfully");
     // connect redis server
-    // await redisClient.connect();
+    await redisClient.connect();
     logger.info("redis connected successfully");
     // start express server
     server.listen(PORT, () => {
@@ -37,7 +37,7 @@ const gracefulShutdown = async () => {
     // disconnect postgres forcefully
     await pool.end();
     // disconnect redis gracefuly
-    // await redisClient.quit();
+    await redisClient.quit();
     // close http server
     server.close(() => {
       logger.info("server closed successfully");
