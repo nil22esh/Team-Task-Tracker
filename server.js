@@ -18,7 +18,7 @@ const startServer = async () => {
     await pool.connect();
     logger.info("database connected successfully");
     // connect redis server
-    await redisClient.connect();
+    // await redisClient.connect();
     logger.info("redis connected successfully");
     // start express server
     server.listen(PORT, () => {

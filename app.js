@@ -18,12 +18,32 @@ ensureUploadDirectory();
 app.use(helmet());
 
 // enable cors
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "*",
-    credentials: true,
-  }),
-);
+const allowedOrigins = [
+  ...(process.env.CLIENT_URL || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+  "http://localhost:5173",
+  "http://localhost:5174",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    if (process.env.NODE_ENV !== "production") {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS origin denied: ${origin}`));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 // app level middlewares -> compress response payloads
 app.use(compression());
